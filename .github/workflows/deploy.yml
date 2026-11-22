@@ -17,18 +17,26 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL || secrets.VITE_SUPABASE_URL }}
+      VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY || secrets.VITE_SUPABASE_ANON_KEY }}
+      VITE_PI_SANDBOX: ${{ vars.VITE_PI_SANDBOX || secrets.VITE_PI_SANDBOX || 'true' }}
     steps:
       - uses: actions/checkout@v4
+
+      - name: Check Supabase settings
+        run: |
+          if [ -z "$VITE_SUPABASE_URL" ]; then echo "::error::VITE_SUPABASE_URL is missing (check the name in Settings > Secrets and variables > Actions)"; exit 1; fi
+          if [ -z "$VITE_SUPABASE_ANON_KEY" ]; then echo "::error::VITE_SUPABASE_ANON_KEY is missing (check the name in Settings > Secrets and variables > Actions)"; exit 1; fi
+          echo "Supabase URL found: $VITE_SUPABASE_URL"
+          echo "Supabase key found (${#VITE_SUPABASE_ANON_KEY} characters)"
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
       - run: npm ci
       - run: npm run build
-        env:
-          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
-          VITE_PI_SANDBOX: ${{ vars.VITE_PI_SANDBOX }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
