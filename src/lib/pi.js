@@ -28,7 +28,7 @@ async function authenticate() {
           await api.piComplete({ paymentId: payment.identifier, txid: payment.transaction.txid, orderId: payment.metadata?.orderId })
         }
       }),
-      20000,
+      120000,
       'PI_TIMEOUT',
     ).catch((e) => {
       authPromise = null
