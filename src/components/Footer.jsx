@@ -43,7 +43,10 @@ export default function Footer() {
       <div className="footer-bottom">
         <div className="wrap fb-in">
           <span><b>{settings.company_name}</b> | {loc(settings, 'tagline')}</span>
-          <span>© {new Date().getFullYear()} {settings.company_name}. {t('rights')}</span>
+          <span>
+            © {new Date().getFullYear()} {settings.company_name}. {t('rights')} ·{' '}
+            <a href="./privacy.html">Privacy Policy</a> · <a href="./terms.html">Terms of Service</a>
+          </span>
         </div>
       </div>
     </footer>
